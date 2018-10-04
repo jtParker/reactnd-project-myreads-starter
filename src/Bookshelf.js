@@ -10,12 +10,11 @@ class BookShelf extends Component {
     wantToRead: []
   }
 
-  changeShelf = (event) => {
-
-  }
-
   render() {
     const books = this.props
+    const current = books.filter(book => book.shelf === 'currentlyReading')
+    const want = books.filter(book => book.shelf === 'wantToRead')
+    const haveRead = books.filter(book => book.shelf === 'read')
 
     return (
       <div className="list-books">

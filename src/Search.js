@@ -9,10 +9,11 @@ class SearchBooks extends Component {
     value: ''
   }
 
-  handleChange = (e) => {
-    const values = e.target
-    console.log('Search value: ' + this.state.value)
-    this.props.changeShelf(values)
+  handleChange = (book, e) => {
+    const shelf = e.target.value
+    const selectedBook = book
+    console.log(shelf, e.target)
+    this.props.changeShelf(shelf, selectedBook)
   }
 
   updateQuery = (query) => {
@@ -23,7 +24,7 @@ class SearchBooks extends Component {
 
     const { books } = this.props
     const { query } = this.state
-
+    console.log(books)
     let queryList
 
     if (query) {
@@ -54,7 +55,7 @@ class SearchBooks extends Component {
                     <div className="book-cover" style={{
                       backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                     <div className="book-shelf-changer">
-                      <select onChange={this.handleChange} value={this.state.value}>
+                      <select onChange={(e) => this.handleChange(book.id, e)} book={book.id}>
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
