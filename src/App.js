@@ -25,6 +25,7 @@ class BooksApp extends React.Component {
       <div className="app">
         <Route exact path="/" render={() => (
           <BookShelf
+            books={this.state.books}
           />
         )}/>
         <Route path="/search" render={({history}) => (

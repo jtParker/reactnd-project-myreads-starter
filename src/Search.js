@@ -24,7 +24,6 @@ class SearchBooks extends Component {
 
     const { books } = this.props
     const { query } = this.state
-    console.log(books)
     let queryList
 
     if (query) {
@@ -55,7 +54,7 @@ class SearchBooks extends Component {
                     <div className="book-cover" style={{
                       backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                     <div className="book-shelf-changer">
-                      <select onChange={(e) => this.handleChange(book.id, e)} book={book.id}>
+                      <select onChange={(e) => this.handleChange(book.id, e)}>
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
