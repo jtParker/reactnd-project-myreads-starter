@@ -15,11 +15,16 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
+      console.log(books)
     })
   }
 
   selectShelf = (shelf, selectedBook) => {
-    BooksAPI.update(selectedBook, shelf)
+    BooksAPI.update(selectedBook, shelf).then(
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books })
+      console.log(books)
+    }))
   }
 
   render() {
@@ -27,9 +32,9 @@ class BooksApp extends React.Component {
       <div className="app">
         <Route exact path="/" render={() => (
           <div>
-            <CurrentBookShelf books={this.state.books}/>
-            <WantToReadShelf books={this.state.books}/>
-            <HaveReadShelf books={this.state.books}/>
+            <CurrentBookShelf books={this.state.books} changeShelf={this.selectShelf}/>
+            <WantToReadShelf books={this.state.books} changeShelf={this.selectShelf}/>
+            <HaveReadShelf books={this.state.books} changeShelf={this.selectShelf}/>
           </div>
         )}/>
         <Route path="/search" render={({history}) => (

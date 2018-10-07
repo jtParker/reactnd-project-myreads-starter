@@ -9,6 +9,7 @@ class SearchBooks extends Component {
     value: ''
   }
 
+// Get select value and pass it to the parent component to update
   handleChange = (book, e) => {
     const shelf = e.target.value
     const selectedBook = book
@@ -54,7 +55,7 @@ class SearchBooks extends Component {
                     <div className="book-cover" style={{
                       backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                     <div className="book-shelf-changer">
-                      <select onChange={(e) => this.handleChange(book.id, e)}>
+                      <select onChange={(e) => this.handleChange(book, e)} value={book.shelf}>
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>

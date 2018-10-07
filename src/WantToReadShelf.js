@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 class WantToReadShelf extends Component {
 
+// Get select value and pass it to the parent component to update
   handleChange = (book, e) => {
     const shelf = e.target.value
     const selectedBook = book
@@ -11,6 +12,8 @@ class WantToReadShelf extends Component {
   }
 
   render() {
+    const { books } = this.props
+    let want = books.filter(book => book.shelf === 'wantToRead')
 
     return (
       <div className="bookshelf">
@@ -23,7 +26,7 @@ class WantToReadShelf extends Component {
                   <div className="book-top">
                     <div className="book-cover" style={{backgroundImage: `url(${toRead.imageLinks.thumbnail})` }}></div>
                     <div className="book-shelf-changer">
-                      <select>
+                      <select onChange={(e) => this.handleChange(toRead, e)} value={toRead.shelf}>
                         <option value="move" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>
                         <option value="wantToRead">Want to Read</option>
@@ -33,11 +36,14 @@ class WantToReadShelf extends Component {
                     </div>
                   </div>
                   <div className="book-title">{toRead.title}</div>
-                  <div className="book-authors">{toRead.author}</div>
+                  <div className="book-authors">{toRead.authors}</div>
                 </div>
               </li>
             ))}
           </ol>
+        </div>
+        <div className="open-search">
+          <Link to="/search">Add a book</Link>
         </div>
       </div>
     )

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 class CurrentBookShelf extends Component {
 
+// Get select value and pass it to the parent component to update
   handleChange = (book, e) => {
     const shelf = e.target.value
     const selectedBook = book
@@ -12,10 +13,7 @@ class CurrentBookShelf extends Component {
 
   render() {
     const { books } = this.props
-    const current = books.filter(book => book.shelf === 'currentlyReading')
-    const want = books.filter(book => book.shelf === 'wantToRead')
-    const haveRead = books.filter(book => book.shelf === 'read')
-
+    let currentBooks = books.filter(book => book.shelf === 'currentlyReading')
 
     return (
       <div className="list-books">
@@ -28,13 +26,13 @@ class CurrentBookShelf extends Component {
               <h2 className="bookshelf-title">Currently Reading</h2>
               <div className="bookshelf-books">
                 <ol className="books-grid">
-                  {current.map((current) => (
+                  {currentBooks.map((current) => (
                     <li key={current.id}>
                       <div className="book">
                         <div className="book-top">
                           <div className="book-cover" style={{backgroundImage: `url(${current.imageLinks.thumbnail})` }}></div>
                           <div className="book-shelf-changer">
-                            <select onChange={this.changeShelf} value={this.state.value}>
+                            <select onChange={(e) => this.handleChange(current, e)} value={current.shelf}>
                               <option value="move" disabled>Move to...</option>
                               <option value="currentlyReading">Currently Reading</option>
                               <option value="wantToRead">Want to Read</option>
@@ -44,7 +42,7 @@ class CurrentBookShelf extends Component {
                           </div>
                         </div>
                         <div className="book-title">{current.title}</div>
-                        <div className="book-authors">{current.author}</div>
+                        <div className="book-authors">{current.authors}</div>
                       </div>
                     </li>
                   ))}
