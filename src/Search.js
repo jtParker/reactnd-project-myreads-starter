@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
 import escapeRegExp from 'escape-string-regexp'
 
 class SearchBooks extends Component {
 
   state = {
     query: '',
-    value: ''
+    value: '',
+    books: []
   }
 
 // Get select value and pass it to the parent component to update
@@ -17,22 +19,18 @@ class SearchBooks extends Component {
     this.props.changeShelf(shelf, selectedBook)
   }
 
+  searchBooks = (query) => {
+    let searchQuery = query.trim()
+    BooksAPI.search(searchQuery).then((books) => {
+      this.setState({ books })
+    })
+  }
+
   updateQuery = (query) => {
-  this.setState({ query: query.trim() })
+    
   }
 
   render() {
-
-    const { books } = this.props
-    const { query } = this.state
-    let queryList
-
-    if (query) {
-      const match = new RegExp(escapeRegExp(query), 'i')
-      queryList = books.filter((book) => match.test(book.title))
-    } else {
-      queryList = books
-    }
 
     return (
       <div className="search-books">
@@ -41,14 +39,13 @@ class SearchBooks extends Component {
           <div className="search-books-input-wrapper">
             <input type="text"
                     placeholder="Search by title or author"
-                    value={query}
-                    onChange={(event) => this.updateQuery(event.target.value)}/>
+                    onChange={(event) => this.searchBooks(event.target.value)}/>
 
           </div>
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {queryList.map((book) => (
+            {this.state.books.map((book) => (
               <li key={book.id}>
                 <div className="book">
                   <div className="book-top">
