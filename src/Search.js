@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import escapeRegExp from 'escape-string-regexp'
 
 class SearchBooks extends Component {
 
@@ -9,6 +8,14 @@ class SearchBooks extends Component {
     query: '',
     value: '',
     books: []
+  }
+
+  changeBackgroundImage = (book) => {
+    let bookCover = book.hasOwnProperty('imageLinks')
+    if(!bookCover) {
+      book.imageLinks = []
+      book.imageLinks.thumbnail = 'https://via.placeholder.com/150x200?text=no+image+available'
+    }
   }
 
 // Get select value and pass it to the parent component to update
@@ -21,16 +28,24 @@ class SearchBooks extends Component {
 
   searchBooks = (query) => {
     let searchQuery = query.trim()
-    BooksAPI.search(searchQuery).then((books) => {
-      this.setState({ books })
-    })
-  }
-
-  updateQuery = (query) => {
-    
+    if (searchQuery === ''){
+      this.setState({ books: []})
+      return
+    } else {
+      BooksAPI.search(searchQuery).then((books) => {
+        if (!books.length) {
+          this.setState({ books: []})
+          return
+        } else {
+          books.forEach(book => this.changeBackgroundImage(book))
+          this.setState({ books })
+        }
+      })
+    }
   }
 
   render() {
+    let bookCover
 
     return (
       <div className="search-books">
@@ -40,7 +55,6 @@ class SearchBooks extends Component {
             <input type="text"
                     placeholder="Search by title or author"
                     onChange={(event) => this.searchBooks(event.target.value)}/>
-
           </div>
         </div>
         <div className="search-books-results">
@@ -62,7 +76,7 @@ class SearchBooks extends Component {
                     </div>
                   </div>
                   <div className="book-title">{book.title}</div>
-                  <div className="book-authors">{book.author}</div>
+                  <div className="book-authors">{book.authors}</div>
                 </div>
               </li>
             ))}
