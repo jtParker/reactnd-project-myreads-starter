@@ -15,7 +15,6 @@ class SearchBooks extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.books !== nextProps.books) {
       this.setState({shelvedBooks: nextProps.books})
-      debugger
       this.setBookShelfState(this.state.books, this.state.shelvedBooks)
     }
   }

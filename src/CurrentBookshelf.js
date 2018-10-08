@@ -7,7 +7,6 @@ class CurrentBookShelf extends Component {
   handleChange = (book, e) => {
     const shelf = e.target.value
     const selectedBook = book
-    console.log(shelf, e.target)
     this.props.changeShelf(shelf, selectedBook)
   }
 
