@@ -1,15 +1,26 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import {DebounceInput} from 'react-debounce-input'
 
 class SearchBooks extends Component {
 
   state = {
     query: '',
     value: '',
-    books: []
+    books: [],
+    shelvedBooks: this.props.books
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.books !== nextProps.books) {
+      this.setState({shelvedBooks: nextProps.books})
+      debugger
+      this.setBookShelfState(this.state.books, this.state.shelvedBooks)
+    }
+  }
+
+// Check for imageLinks property. If absent add the property with a placeholder image
   changeBackgroundImage = (book) => {
     let bookCover = book.hasOwnProperty('imageLinks')
     if(!bookCover) {
@@ -22,22 +33,35 @@ class SearchBooks extends Component {
   handleChange = (book, e) => {
     const shelf = e.target.value
     const selectedBook = book
-    console.log(shelf, e.target)
     this.props.changeShelf(shelf, selectedBook)
   }
 
+// Compare searched books to shelved books. If book is on shelf set the appropriate shelf value
+  setBookShelfState = (searched, shelved) => {
+    for (var i = 0; i < searched.length; i++) {
+      for (var j = 0; j < shelved.length; j++) {
+        if (shelved[j].title === searched[i].title) {
+          searched[i].shelf = shelved[j].shelf
+        } else {
+          searched[i].shelf = 'none'
+        }
+      }
+    }
+  }
+
+// Send query to search API
   searchBooks = (query) => {
-    let searchQuery = query.trim()
-    if (searchQuery === ''){
+    if (query === ''){
       this.setState({ books: []})
       return
     } else {
-      BooksAPI.search(searchQuery).then((books) => {
+      BooksAPI.search(query).then((books) => {
         if (!books.length) {
           this.setState({ books: []})
           return
         } else {
           books.forEach(book => this.changeBackgroundImage(book))
+          this.setBookShelfState(books, this.state.shelvedBooks)
           this.setState({ books })
         }
       })
@@ -45,14 +69,16 @@ class SearchBooks extends Component {
   }
 
   render() {
-    let bookCover
 
     return (
       <div className="search-books">
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
           <div className="search-books-input-wrapper">
-            <input type="text"
+            <DebounceInput
+                    minLength={1}
+                    debounceTimeout={300}
+                    type="text"
                     placeholder="Search by title or author"
                     onChange={(event) => this.searchBooks(event.target.value)}/>
           </div>
